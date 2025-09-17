@@ -66,3 +66,23 @@ The problem is that a class implements an interface but does not use all its met
 ## Explain answer reason:-
 "The solution is to split WidgetController into smaller, role-specific interfaces. For example, BasicController for initState and dispose, AnimationController for animation handling, and NetworkController for network operations.
 <img width="750" height="770" alt="answer_4" src="https://github.com/user-attachments/assets/66f0bfcb-b6a0-4f70-9926-a0aaf9fdde02" />
+
+--------------------------------------------------------------
+
+## Question 5
+This question is about the Dependency Inversion Principle (DIP).  
+## Answer is C  
+
+## Explain the issue:-
+The `AppNotifier` class directly depends on `LocalNotificationService` by creating an instance of it inside.  
+This creates a **tight coupling** between the notifier and the local service.  
+If we want to replace the notification system (e.g., with Firebase Cloud Messaging, or even a mock service for testing), we would have to modify the `AppNotifier` class itself.  
+This breaks the Dependency Inversion Principle (DIP), because high-level modules (like `AppNotifier`) should depend on abstractions, not concrete implementations.  
+<img width="750" height="770" alt="issue_5" src="https://github.com/user-attachments/assets/20d66041-0902-424c-ba32-27085abac9d9" />
+
+## Explain answer reason:-
+To fix this, we introduce an abstraction `NotificationService` (interface/abstract class) with a `send` method.  
+Both `LocalNotificationService` and other future implementations (e.g., `RemoteNotificationService`) will implement this interface.  
+The `AppNotifier` will then receive a `NotificationService` through its constructor (dependency injection), making it flexible, testable, and extensible without modifying its code.  
+<img width="750" height="770" alt="answer_5" src="https://github.com/user-attachments/assets/e30d3ec4-3a2c-4e19-8ae7-a3a7ecd0f63c" />
+

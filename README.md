@@ -86,3 +86,61 @@ Both `LocalNotificationService` and other future implementations (e.g., `RemoteN
 The `AppNotifier` will then receive a `NotificationService` through its constructor (dependency injection), making it flexible, testable, and extensible without modifying its code.  
 <img width="750" height="770" alt="answer_5" src="https://github.com/user-attachments/assets/e30d3ec4-3a2c-4e19-8ae7-a3a7ecd0f63c" />
 
+--------------------------------------------------------------
+
+## Question 6
+Ahwa App => Add Order Management Features with BLoC Pattern
+
+### Overview
+- Introduced full order management system for the Smart Ahwa Manager app, 
+  enabling users to add, track, and serve customer orders with proper 
+  state management and UI updates.
+
+### Core Changes
+1. **Order State Management (BLoC)**
+   - Added `OrderCubit` to manage the lifecycle of orders (add, serve, list).
+   - Implemented `OrderState` to encapsulate order-related data, 
+     including pending orders, served orders, and top-selling drinks.
+
+2. **Domain Layer**
+   - Created `OrderModel` to represent each order with:
+     - customerName
+     - drinkType
+     - specialInstructions
+     - isServed
+   - Implemented `DrinkFactory` for drink instance management, ensuring 
+     clean instantiation and separation of concerns.
+
+3. **UI Layer**
+   - Developed **Orders Screen** to display current orders with 
+     "serve" actions (✅ button).
+   - Built **Dashboard Screen** to show:
+     - Total served drinks
+     - Top-selling drinks
+     - Debug section for all orders
+   - Connected screens with `OrderCubit` for reactive UI updates.
+
+4. **Architecture Improvements**
+   - Integrated dependency injection using `get_it` for service and Cubit management.
+   - Applied SOLID principles:
+     - SRP: separated UI, business logic, and data.
+     - DIP: Cubit depends on abstraction, not concrete services.
+     - Encapsulation: order details hidden inside model.
+
+### Dependencies
+- Updated `pubspec.lock` with:
+  - bloc
+  - flutter_bloc
+  - get_it
+  - other supporting packages
+
+### UI Previews
+- **Dashboard Screen:** shows total served count, top-selling drinks, and debug orders list.
+- **Orders Screen:** allows adding new orders and marking them as served.
+![WhatsApp Image 2025-09-18 at 14 55 51_7ca2abb3](https://github.com/user-attachments/assets/e24e5575-206e-4aca-81c5-d365cb942bd1)
+![WhatsApp Image 2025-09-18 at 14 55 51_c56dd7ef](https://github.com/user-attachments/assets/e3253758-6dcb-4957-886e-8638ac49305c)
+![WhatsApp Image 2025-09-18 at 14 55 51_e3406001](https://github.com/user-attachments/assets/9464547d-8fc4-45b9-ac1a-0730b8243c77)
+![WhatsApp Image 2025-09-18 at 14 55 51_1d3eb397](https://github.com/user-attachments/assets/0a17d428-08fb-40b2-9f63-9da3385c66a1)
+
+
+

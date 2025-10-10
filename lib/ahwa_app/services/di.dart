@@ -17,4 +17,7 @@ void setupLocator() {
   getIt.registerLazySingleton<OrderCubit>(
     () => OrderCubit(getIt<OrderManager>()),
   );
+
+  
+
 }

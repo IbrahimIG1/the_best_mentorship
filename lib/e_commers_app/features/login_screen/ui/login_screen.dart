@@ -6,6 +6,7 @@ import 'package:omar_ahmed_mentor_ship/ahwa_app/services/di.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/button.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/text_field.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/toast.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/features/home_screen/ui/home_screen.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/features/login_screen/data/login_req_model.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/features/login_screen/logic/cubit/login_cubit.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/features/register_screen/ui/register_screen.dart';
@@ -23,6 +24,9 @@ class LoginScreen extends StatelessWidget {
             showToast("Logging in...", background: Colors.blueAccent);
           } else if (state is LoginSuccessState) {
             showToast("Login Successful ✅", background: Colors.green);
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
           } else if (state is LoginErrorState) {
             showToast(
               state.errorModel.errors.toString(),

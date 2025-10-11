@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/core/local/secure_storage_helper.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/core/local/shared_prefrence.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/network/api_services/api_services.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/network/error/dio_error_handler.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/network/error/error_model.dart';
@@ -22,15 +24,21 @@ class LoginRepo {
       LoginModelResponse loginModelResponse = LoginModelResponse.fromJson(
         response.data,
       );
+      await AppSecureStorageHelper.saveToken(
+        SharedPrefKeys.token,
+        "bearer ${loginModelResponse.accessToken}",
+      );
+      await AppSecureStorageHelper.saveToken(
+        SharedPrefKeys.token,
+        "bearer ${loginModelResponse.refreshToken}",
+      );
       return right(loginModelResponse);
     } on DioException catch (e) {
       if (e.response != null) {
         print("DioException : ${e.response!.data['message']}");
         final errorData = e.response?.data;
-  final errorModel = ErrorModel.fromJson(errorData ?? {});
-        return left(
-          errorModel
-        );
+        final errorModel = ErrorModel.fromJson(errorData ?? {});
+        return left(errorModel);
       } else {
         print("DioException else : ${e.message}");
         ErrorModel error = DioExceptionHandler.handleDioError(e);

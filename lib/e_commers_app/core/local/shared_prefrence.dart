@@ -57,6 +57,7 @@ class SharedPreferencesHelper {
 /// Shared Preference Keys
 class SharedPrefKeys {
   static String userName =  "user_name";
+  static String gender =  "gender";
   
   static String userId =  "user_id";
 

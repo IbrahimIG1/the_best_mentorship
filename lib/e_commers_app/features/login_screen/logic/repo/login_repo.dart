@@ -26,12 +26,10 @@ class LoginRepo {
     } on DioException catch (e) {
       if (e.response != null) {
         print("DioException : ${e.response!.data['message']}");
+        final errorData = e.response?.data;
+  final errorModel = ErrorModel.fromJson(errorData ?? {});
         return left(
-          ErrorModel(
-            message: e.response!.data['message'] ?? "Unknown error",
-            statusCode: e.response!.statusCode,
-            status: e.response!.data['status'],
-          ),
+          errorModel
         );
       } else {
         print("DioException else : ${e.message}");

@@ -32,7 +32,6 @@ class DioExceptionHandler {
 
     return ErrorModel(
       message: message,
-      status: statusMessage ?? "Unknown",
       statusCode: statusCode ?? 0,
     );
   }
@@ -41,7 +40,6 @@ class DioExceptionHandler {
     final data = response.data;
     return ErrorModel(
       message: data['message'] ?? "Server error.",
-      status: data['status'] ?? "error",
       statusCode: data['statusCode'] ?? response.statusCode ?? 0,
     );
   }

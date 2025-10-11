@@ -1,113 +1,173 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:omar_ahmed_mentor_ship/ahwa_app/services/di.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/button.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/text_field.dart';
 import 'package:omar_ahmed_mentor_ship/e_commers_app/core/widgets/toast.dart';
-import '../logic/cubit/login_cubit.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/features/login_screen/data/login_req_model.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/features/login_screen/logic/cubit/login_cubit.dart';
+import 'package:omar_ahmed_mentor_ship/e_commers_app/features/register_screen/ui/register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final loginCubit = GetIt.I<LoginCubit>();
+    return BlocProvider(
+      create: (context) => getIt<LoginCubit>(),
+      child: BlocConsumer<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state is LoginLoadingState) {
+            showToast("Logging in...", background: Colors.blueAccent);
+          } else if (state is LoginSuccessState) {
+            showToast("Login Successful ✅", background: Colors.green);
+          } else if (state is LoginErrorState) {
+            showToast(
+              state.errorModel.errors.toString(),
+              background: Colors.red,
+              toastLength: Toast.LENGTH_LONG,
+            );
+          }
+        },
+        builder: (context, state) {
+          final cubit = context.read<LoginCubit>();
 
-    return BlocProvider.value(
-      value: loginCubit,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: BlocConsumer<LoginCubit, LoginState>(
-            listener: (context, state) {
-              if (state is LoginSuccessState) {
-                showToast("Login successful!", background: Colors.green);
-              } else if (state is LoginErrorState) {
-                showToast(state.errorModel.message ?? "Login failed", background: Colors.red);
-              }
-            },
-            builder: (context, state) {
-              final cubit = context.read<LoginCubit>();
-
-              return Padding(
-                padding: const EdgeInsets.all(24),
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text('Welcome',
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 6),
-                    const Text('Please enter your data to continue',
-                        style: TextStyle(color: Colors.grey)),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
 
+                    // Header
+                    Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Welcome",
+                            style: TextStyle(
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          Text(
+                            "Please enter your data to continue",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 60.h),
+
+                    // Username
                     AppTextField(
-                      label: 'Username',
                       controller: cubit.usernameController,
+                      label: "Username",
+                      suffix: const Icon(Icons.check, color: Colors.green),
                     ),
-                    const SizedBox(height: 20),
+
+                    // Password
                     AppTextField(
-                      label: 'Password',
                       controller: cubit.passwordController,
+                      label: "Password",
                       obscureText: true,
+                      suffix: const Text(
+                        "Strong",
+                        style: TextStyle(color: Colors.green),
+                      ),
                     ),
-                    const SizedBox(height: 10),
+
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
-                        child: const Text('Forgot password?',
-                            style: TextStyle(color: Colors.red)),
+                        child: Text(
+                          "Forgot password?",
+                          style: TextStyle(color: Colors.red, fontSize: 14.sp),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Remember me", style: TextStyle(fontSize: 16)),
+                        Text("Remember me", style: TextStyle(fontSize: 14.sp)),
                         Switch(
-                          value: cubit.rememberMe,
-                          onChanged: cubit.toggleRemember,
+                          value: true,
+                          onChanged: (v) {},
                           activeColor: Colors.green,
                         ),
                       ],
                     ),
-                    const Spacer(),
+
+                    SizedBox(height: 50.h),
+
                     AppButton(
-                      title: 'Login',
-                      isLoading: state is LoginLoadingState,
-                      onPressed: cubit.login,
+                      text: "Login",
+                      loading: state is LoginLoadingState,
+                      onPressed: () {
+                        final loginData = LoginModelRequest(
+                          email: cubit.usernameController.text,
+                          password: cubit.passwordController.text,
+                        );
+                        cubit.login();
+                      },
                     ),
-                    const SizedBox(height: 16),
-                    const Center(
-                      child: Text.rich(
-                        TextSpan(
-                          text:
-                              'By connecting your account confirm that you agree\nwith our ',
-                          style: TextStyle(color: Colors.grey, fontSize: 12),
-                          children: [
-                            TextSpan(
-                              text: 'Term and Condition',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, color: Colors.black),
-                            ),
-                          ],
-                        ),
+
+                    SizedBox(height: 20.h),
+                    //* Sign Up
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text("Sign up"),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 40.h),
+                    Center(
+                      child: Text(
+                        "By connecting your account you confirm that you agree with our ",
+                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    Center(
+                      child: Text(
+                        "Term and Condition",
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

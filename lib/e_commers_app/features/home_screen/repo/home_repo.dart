@@ -13,17 +13,18 @@ class HomeRepo {
   final ApiServices apiServices;
   HomeRepo(this.apiServices);
 
-  Future<Either< ErrorModel, List<CategoryModel>>> getCategories() async {
+  Future<Either<ErrorModel, List<CategoryModel>>> getCategories() async {
     try {
-  final response = await apiServices.get(
-    baseUrl: ApiConstants.categoriesUrl,
-    data: {"refreshToken":await AppSecureStorageHelper.getToken(
-              SharedPrefKeys.token,
-            ),},
-   
-  );
-  return right(response.map((e) => CategoryModel.fromJson(e)).toList());
-} on DioException catch (e) {
+      final response = await apiServices.get(
+        baseUrl: ApiConstants.categoriesUrl,
+        data: {
+          "refreshToken": await AppSecureStorageHelper.getToken(
+            SharedPrefKeys.token,
+          ),
+        },
+      );
+      return right(response.map((e) => CategoryModel.fromJson(e)).toList());
+    } on DioException catch (e) {
       if (e.response != null) {
         final errorData = e.response?.data;
         final errorModel = ErrorModel.fromJson(errorData ?? {});
@@ -39,11 +40,9 @@ class HomeRepo {
 
   Future<Either<ErrorModel, List<ProductModel>>> getProducts() async {
     try {
-  final response = await apiServices.get(
-    baseUrl: ApiConstants.productsUrl,
-  );
-  return right(response.map((e) => ProductModel.fromJson(e)).toList());
-} on DioException catch (e) {
+      final response = await apiServices.get(baseUrl: ApiConstants.productsUrl);
+      return right(response.map((e) => ProductModel.fromJson(e)).toList());
+    } on DioException catch (e) {
       if (e.response != null) {
         final errorData = e.response?.data;
         final errorModel = ErrorModel.fromJson(errorData ?? {});
